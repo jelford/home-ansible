@@ -1,0 +1,17 @@
+---
+- hosts: prom_server
+  become: yes
+  tasks:
+    - name: "Copy latest prometheus config to prom server"
+      copy:
+        src: prometheus.yml
+        dest: /etc/prometheus/prometheus.yml
+      notify:
+        - reload prometheus service
+
+  handlers:
+    - name: reload prometheus service
+      service:
+        name: prometheus
+        state: reloaded
+  

@@ -1,0 +1,9 @@
+[Unit]
+Description="Prometheus node_exporter tool"
+Documentation="https://prometheus.io/docs/guides/node-exporter/ "
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/prometheus-node-exporter
+User=prometheus
+

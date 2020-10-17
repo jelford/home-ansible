@@ -1,0 +1,15 @@
+global:
+  scrape_interval:     30s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 1m # Evaluate rules every 15 seconds. The default is every 1 minute.
+  scrape_timeout: 5s 
+
+scrape_configs:
+  - job_name: 'prometheus'
+
+    scrape_interval: 1m
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: node
+    static_configs:
+      - targets: ['roy.local:9100', 'jameselford.local:9100', 'poppy.local:9100']

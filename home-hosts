@@ -1,0 +1,22 @@
+roy.local ansible_user=pi ansible_python_interpreter=/usr/bin/python3
+jameselford.local ansible_python_interpreter=/usr/bin/python3
+poppy.local ansible_python_interpreter=/usr/bin/python3
+
+
+[pihole]
+roy.local
+
+[prom_server]
+roy.local
+
+[dnfish]
+jameselford.local
+poppy.local
+
+[debianish]
+roy.local
+
+[prod_monitored]
+jameselford.local
+poppy.local
+roy.local

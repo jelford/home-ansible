@@ -1,0 +1,24 @@
+---
+- name: install prometheus
+  hosts: roy.local
+  become: yes
+  become_user: root
+
+  tasks:
+  - name: install prometheus package
+    apt:
+      name: prometheus
+      state: latest
+  - name: configure prometheus (point to environment file)
+    template:
+      dest: /etc/systemd/system/prometheus.service.d/override.conf
+      src: systemd-override.conf.j2
+  - name: configure prometheus (override startup args)
+    template:
+      dest: /usr/local/etc/prometheus.env
+      src: systemd-startup.env
+  handlers: 
+  - name: restart prometheus
+    service:
+      name: prometheus
+      state: restarted

@@ -1,0 +1,83 @@
+---
+- hosts: prom_monitored:&debianish
+  become: yes
+  become_user: root
+  tasks:
+    - name: install prometheus-node-exporter
+      apt:
+        name: prometheus-node-exporter
+        state: present
+
+  handlers:
+  - name: restart prometheus-node-exporter
+    service:
+      name: prometheus-node-exporter
+      state: restarted
+
+- hosts: prom_monitored:&dnfish
+  tasks:
+    - name: create a temporary folder to download into
+      tempfile:
+        state: directory
+        suffix: prom-ne-install
+      register: installer_dir
+    - name: download prometheus-node-exporter
+      get_url:
+        dest: "/tmp/ansible-prom-node-exporter.tar.gz"
+        url: "https://github.com/prometheus/node_exporter/releases/download/v1.0.1/node_exporter-1.0.1.linux-amd64.tar.gz"
+        checksum: "sha256:3369b76cd2b0ba678b6d618deab320e565c3d93ccb5c2a0d5db51a53857768ae"
+      register: install_archive
+    - name: unpack prometheus-node-exporter
+      unarchive:
+        dest: "{{ installer_dir.path }}"
+        src: "{{ install_archive.dest }}"
+        remote_src: yes
+    - name: copy prometheus-node-exporter binary into place
+      copy:
+        remote_src: yes
+        dest: "/usr/bin/prometheus-node-exporter"
+        src: "{{ installer_dir.path }}/node_exporter-1.0.1.linux-amd64/node_exporter"
+        owner: root
+        mode: "0755"
+      become: yes
+    - name: remove temporary files
+      file:
+        name: "{{ installer_dir.path }}"
+        state: absent
+    - name: setup prometheus user
+      user:
+        create_home: no
+        groups: ""
+        name: prometheus
+        shell: "/bin/false"
+        system: yes
+        state: present
+      become: yes
+    - name: install node_exporter service
+      copy:
+        dest: "/etc/systemd/system/prometheus-node-exporter.service"
+        src: "node_exporter.service"
+        owner: root
+        mode: "0644"
+      register: service_definition
+      become: yes
+      notify:
+        - reload service definitions
+        - restart node_exporter service
+    - name: enable node_exporter service
+      service:
+        name: prometheus-node-exporter
+        state: started
+      become: yes
+
+  handlers:
+    - name: reload service definitions
+      systemd:
+        daemon_reload: yes
+      become: yes
+    - name: restart node_exporter service
+      service:
+        name: prometheus-node-exporter
+        state: restarted
+      become: yes
+
