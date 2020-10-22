@@ -7,3 +7,6 @@ Type=simple
 ExecStart=/usr/bin/prometheus-node-exporter
 User=prometheus
 
+[Install]
+WantedBy=multi-user.target
+

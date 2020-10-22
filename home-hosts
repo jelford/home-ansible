@@ -16,7 +16,7 @@ poppy.local
 [debianish]
 roy.local
 
-[prod_monitored]
+[prom_monitored]
 jameselford.local
 poppy.local
 roy.local
