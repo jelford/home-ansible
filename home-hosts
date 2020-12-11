@@ -1,7 +1,6 @@
 roy.local ansible_user=pi ansible_python_interpreter=/usr/bin/python3
 jameselford.local ansible_python_interpreter=/usr/bin/python3
-poppy.local ansible_python_interpreter=/usr/bin/python3
-
+max.local ansible_python_interpreter=/usr/bin/python3
 
 [pihole]
 roy.local
@@ -11,12 +10,12 @@ roy.local
 
 [dnfish]
 jameselford.local
-poppy.local
+max.local
 
 [debianish]
 roy.local
 
 [prom_monitored]
 jameselford.local
-poppy.local
 roy.local
+max.local
